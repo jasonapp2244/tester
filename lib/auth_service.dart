@@ -34,7 +34,7 @@ class AuthService {
     }
   }
 
-  // Sign In
+  // Forget Password
   Future<User?> forgetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);

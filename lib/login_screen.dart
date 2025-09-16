@@ -6,13 +6,13 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool isLogin = true; // toggle between login/signup
+  bool isLogin = true;
   final AuthService _authService = AuthService();
 
   @override
@@ -32,6 +32,29 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: passwordController,
               decoration: const InputDecoration(labelText: "Password"),
               obscureText: true,
+            ),
+            TextButton(
+              onPressed: () async {
+                if (emailController.text.isNotEmpty) {
+                  if (isLogin) {
+                    await _authService.forgetPassword(
+                      emailController.text.trim(),
+                    );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Password reset email sent"),
+                        ),
+                      );
+                    }
+                  }
+                } else { ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please Enter Register Email"),
+                        ),
+                      );}
+              },
+              child: isLogin ? Text("Forget Password?") : Text(""),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -53,9 +76,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextButton(
               onPressed: () => setState(() => isLogin = !isLogin),
-              child: Text(isLogin
-                  ? "Don't have an account? Sign Up"
-                  : "Already have an account? Login"),
+              child: Text(
+                isLogin
+                    ? "Don't have an account? Sign Up"
+                    : "Already have an account? Login",
+              ),
             ),
           ],
         ),
